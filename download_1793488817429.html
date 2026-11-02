@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b0b" />
+  <meta
+    name="description"
+    content="NOIR — An immersive fine dining experience in the heart of Cairo."
+  />
+
+  <title>NOIR — Fine Dining, Redefined</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #0a0a09;
+      --bg-soft: #11110f;
+      --surface: #161613;
+      --text: #f1eee7;
+      --muted: #9c998f;
+      --gold: #c7a96b;
+      --gold-light: #e4cea0;
+      --line: rgba(255, 255, 255, 0.12);
+      --serif: "Cormorant Garamond", serif;
+      --sans: "Manrope", sans-serif;
+      --container: min(1280px, calc(100vw - 96px));
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-color: var(--gold) var(--bg);
+      scrollbar-width: thin;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    body.loading,
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    ::selection {
+      background: var(--gold);
+      color: #090909;
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      color: inherit;
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .container {
+      width: var(--container);
+      margin-inline: auto;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10001;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 15px var(--gold);
+    }
+
+    /* Preloader */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      background: #080807;
+      transition:
+        opacity 0.8s var(--ease),
+        visibility 0.8s;
+    }
+
+    .preloader.done {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-logo {
+      font-family: var(--serif);
+      font-size: clamp(4rem, 10vw, 8rem);
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      line-height: 1;
+      animation: loaderGlow 2s ease-in-out infinite;
+    }
+
+    .loader-line {
+      width: 180px;
+      height: 1px;
+      margin: 28px auto 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .loader-line span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.15s linear;
+    }
+
+    .loader-meta {
+      display: flex;
+      justify-content: space-between;
+      width: 180px;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    @keyframes loaderGlow {
+      50% {
+        color: var(--gold-light);
+        text-shadow: 0 0 35px rgba(199, 169, 107, 0.25);
+      }
+    }
+
+    /* Cursor */
+    .cursor,
+    .cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(199, 169, 107, 0.65);
+      transition:
+        width 0.35s var(--ease),
+        height 0.35s var(--ease),
+        background 0.35s,
+        opacity 0.3s;
+    }
+
+    .cursor-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--gold-light);
+    }
+
+    .cursor.active {
+      width: 72px;
+      height: 72px;
+      background: rgba(199, 169, 107, 0.1);
+      backdrop-filter: blur(3px);
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100%;
+      padding: 30px 0;
+      transition: 0.5s var(--ease);
+    }
+
+    .header.scrolled {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 9, 0.78);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      position: relative;
+      z-index: 1002;
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 38px;
+      list-style: none;
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 6px 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-link::after {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      content: "";
+      transition: width 0.4s var(--ease);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-book {
+      padding: 13px 24px;
+      border: 1px solid rgba(199, 169, 107, 0.55);
+      color: var(--gold-light);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      transition: 0.35s;
+    }
+
+    .nav-book:hover {
+      background: var(--gold);
+      color: #090909;
+    }
+
+    .menu-toggle {
+      position: relative;
+      z-index: 1002;
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      left: 8px;
+      width: 28px;
+      height: 1px;
+      background: var(--text);
+      transition: 0.4s var(--ease);
+    }
+
+    .menu-toggle span:first-child {
+      top: 17px;
+    }
+
+    .menu-toggle span:last-child {
+      top: 26px;
+    }
+
+    .menu-open .menu-toggle span:first-child {
+      top: 22px;
+      transform: rotate(45deg);
+    }
+
+    .menu-open .menu-toggle span:last-child {
+      top: 22px;
+      transform: rotate(-45deg);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 100svh;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: -8%;
+      z-index: -3;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.25) 75%),
+        url("https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=2200&q=90")
+          center/cover;
+      transform: scale(1.08);
+      transition: transform 2.2s var(--ease);
+      will-change: transform;
+    }
+
+    .is-loaded .hero-media {
+      transform: scale(1);
+    }
+
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(0deg, var(--bg) 0%, transparent 28%),
+        radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 0.5));
+      content: "";
+    }
+
+    .hero-content {
+      padding-top: 100px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--gold-light);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 45px;
+      height: 1px;
+      background: var(--gold);
+      content: "";
+    }
+
+    .hero-title {
+      max-width: 900px;
+      margin: 25px 0 28px;
+      font-family: var(--serif);
+      font-size: clamp(5rem, 11vw, 10.5rem);
+      font-weight: 400;
+      letter-spacing: -0.055em;
+      line-height: 0.72;
+    }
+
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+      padding: 0.12em 0;
+    }
+
+    .hero-title .line > span {
+      display: block;
+      transform: translateY(120%);
+      transition: transform 1.3s var(--ease);
+    }
+
+    .hero-title .line:nth-child(2) {
+      padding-left: 0.65em;
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .is-loaded .hero-title .line > span {
+      transform: translateY(0);
+    }
+
+    .is-loaded .hero-title .line:nth-child(2) > span {
+      transition-delay: 0.15s;
+    }
+
+    .hero-bottom {
+      display: flex;
+      align-items: center;
+      gap: 55px;
+      max-width: 760px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: 1s 0.65s var(--ease);
+    }
+
+    .is-loaded .hero-bottom {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-description {
+      max-width: 390px;
+      color: #bbb8b0;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      min-width: 190px;
+      padding: 18px 25px;
+      overflow: hidden;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold-light);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.45s;
+    }
+
+    .button::before {
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      content: "";
+      transform: translateY(102%);
+      transition: transform 0.5s var(--ease);
+    }
+
+    .button span,
+    .button svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    .button svg {
+      width: 17px;
+      transition: transform 0.4s var(--ease);
+    }
+
+    .button:hover {
+      color: #090909;
+    }
+
+    .button:hover::before {
+      transform: translateY(0);
+    }
+
+    .button:hover svg {
+      transform: translateX(5px);
+    }
+
+    .hero-side {
+      position: absolute;
+      right: 40px;
+      bottom: 46px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transform: rotate(90deg) translateX(100%);
+      transform-origin: right bottom;
+    }
+
+    .hero-side::after {
+      width: 80px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.35);
+      content: "";
+    }
+
+    .hero-award {
+      position: absolute;
+      right: 8%;
+      bottom: 12%;
+      display: grid;
+      width: 130px;
+      height: 130px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.12);
+      text-align: center;
+      backdrop-filter: blur(8px);
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .hero-award::before {
+      position: absolute;
+      inset: 7px;
+      border: 1px dashed rgba(199, 169, 107, 0.4);
+      border-radius: 50%;
+      content: "";
+      animation: spin 25s linear infinite;
+    }
+
+    .hero-award strong {
+      display: block;
+      color: var(--gold-light);
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 400;
+    }
+
+    .hero-award small {
+      display: block;
+      margin-top: 4px;
+      font-size: 7px;
+      letter-spacing: 0.15em;
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    @keyframes float {
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Marquee */
+    .marquee {
+      overflow: hidden;
+      border-block: 1px solid var(--line);
+      background: var(--gold);
+      color: #12110e;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .marquee span {
+      display: flex;
+      align-items: center;
+      gap: 35px;
+      padding: 18px 20px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .marquee span::after {
+      content: "✦";
+      font-size: 12px;
+    }
+
+    @keyframes marquee {
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Shared */
+    .section {
+      position: relative;
+      padding: 150px 0;
+    }
+
+    .section-number {
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+    }
+
+    .section-title {
+      margin-top: 20px;
+      font-family: var(--serif);
+      font-size: clamp(3.6rem, 6.8vw, 7rem);
+      font-weight: 400;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+    }
+
+    .section-title em {
+      color: var(--gold-light);
+      font-weight: 400;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition:
+        opacity 1s var(--ease),
+        transform 1s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal.delay-1 {
+      transition-delay: 0.12s;
+    }
+
+    .reveal.delay-2 {
+      transition-delay: 0.24s;
+    }
+
+    /* Story */
+    .story-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 10%;
+      align-items: center;
+    }
+
+    .story-visual {
+      position: relative;
+      min-height: 680px;
+    }
+
+    .image-main {
+      position: absolute;
+      inset: 0 14% 0 0;
+      overflow: hidden;
+    }
+
+    .image-main img,
+    .image-float img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s var(--ease);
+    }
+
+    .image-main:hover img,
+    .image-float:hover img {
+      transform: scale(1.06);
+    }
+
+    .image-float {
+      position: absolute;
+      right: 0;
+      bottom: -45px;
+      width: 48%;
+      height: 42%;
+      overflow: hidden;
+      border: 10px solid var(--bg);
+    }
+
+    .vertical-caption {
+      position: absolute;
+      top: 0;
+      right: 3%;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+    }
+
+    .story-copy > p {
+      max-width: 500px;
+      margin: 35px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .signature {
+      margin: 35px 0;
+      color: var(--gold-light);
+      font-family: var(--serif);
+      font-size: 35px;
+      font-style: italic;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-top: 55px;
+      padding-top: 35px;
+      border-top: 1px solid var(--line);
+    }
+
+    .stat strong {
+      display: block;
+      font-family: var(--serif);
+      font-size: 43px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .stat strong span {
+      color: var(--gold);
+    }
+
+    .stat small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+    }
+
+    /* Menu */
+    .menu-section {
+      overflow: hidden;
+      background: var(--bg-soft);
+    }
+
+    .menu-section::before {
+      position: absolute;
+      top: -300px;
+      right: -300px;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: rgba(199, 169, 107, 0.055);
+      filter: blur(100px);
+      content: "";
+    }
+
+    .menu-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 35px;
+      margin-bottom: 55px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter {
+      padding: 12px 19px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      transition: 0.35s;
+    }
+
+    .filter:hover,
+    .filter.active {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #0b0b09;
+    }
+
+    .dishes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px 25px;
+    }
+
+    .dish {
+      animation: dishIn 0.6s var(--ease) both;
+    }
+
+    .dish.is-hidden {
+      display: none;
+    }
+
+    @keyframes dishIn {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+    }
+
+    .dish-image {
+      position: relative;
+      height: 390px;
+      overflow: hidden;
+      background: #20201c;
+      transform-style: preserve-3d;
+    }
+
+    .dish-image::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent 45%);
+      content: "";
+    }
+
+    .dish-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.9s var(--ease), filter 0.5s;
+    }
+
+    .dish:hover .dish-image img {
+      transform: scale(1.09);
+      filter: saturate(1.15);
+    }
+
+    .dish-tag {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      padding: 8px 12px;
+      background: rgba(10, 10, 9, 0.75);
+      color: var(--gold-light);
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .dish-info {
+      padding-top: 22px;
+    }
+
+    .dish-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .dish-heading h3 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 400;
+    }
+
+    .dish-price {
+      color: var(--gold);
+      font-family: var(--serif);
+      font-size: 23px;
+      white-space: nowrap;
+    }
+
+    .dish-info p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    /* Cinematic quote */
+    .cinematic {
+      position: relative;
+      display: grid;
+      min-height: 90vh;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+      text-align: center;
+    }
+
+    .cinematic-bg {
+      position: absolute;
+      inset: -12%;
+      z-index: -2;
+      background: url("https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=2200&q=90")
+        center/cover fixed;
+    }
+
+    .cinematic::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: rgba(5, 5, 4, 0.72);
+      content: "";
+    }
+
+    .quote-mark {
+      color: var(--gold);
+      font-family: var(--serif);
+      font-size: 100px;
+      line-height: 0.5;
+    }
+
+    .cinematic blockquote {
+      max-width: 1000px;
+      margin: 35px auto;
+      font-family: var(--serif);
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .cinematic blockquote em {
+      color: var(--gold-light);
+    }
+
+    .cinematic small {
+      color: #c1bdb4;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* Experiences */
+    .experiences-header {
+      max-width: 700px;
+      margin-bottom: 65px;
+    }
+
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .experience-card {
+      position: relative;
+      min-height: 360px;
+      padding: 45px 35px;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      transition: background 0.5s;
+    }
+
+    .experience-card::before {
+      position: absolute;
+      right: -70px;
+      bottom: -70px;
+      width: 180px;
+      height: 180px;
+      border: 1px solid rgba(199, 169, 107, 0.2);
+      border-radius: 50%;
+      content: "";
+      transition: transform 0.7s var(--ease);
+    }
+
+    .experience-card:hover {
+      background: rgba(199, 169, 107, 0.045);
+    }
+
+    .experience-card:hover::before {
+      transform: scale(1.7);
+    }
+
+    .experience-number {
+      color: var(--gold);
+      font-family: var(--serif);
+      font-size: 18px;
+    }
+
+    .experience-icon {
+      margin: 55px 0 25px;
+      color: var(--gold-light);
+      font-family: var(--serif);
+      font-size: 42px;
+    }
+
+    .experience-card h3 {
+      font-family: var(--serif);
+      font-size: 31px;
+      font-weight: 400;
+    }
+
+    .experience-card p {
+      max-width: 280px;
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    /* Reservation */
+    .reservation {
+      background: #11110e;
+    }
+
+    .reservation-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 10%;
+    }
+
+    .reservation-copy p {
+      max-width: 420px;
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .contact-mini {
+      display: grid;
+      gap: 16px;
+      margin-top: 50px;
+      color: #c7c3b9;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+
+    .contact-mini a:hover {
+      color: var(--gold);
+    }
+
+    .booking-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 25px;
+      padding-top: 15px;
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 11px;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      transition: border-color 0.3s;
+    }
+
+    .field input,
+    .field select {
+      height: 48px;
+    }
+
+    .field textarea {
+      min-height: 85px;
+      padding: 12px 0;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .field select {
+      color-scheme: dark;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #65635d;
+    }
+
+    .form-footer {
+      display: flex;
+      grid-column: 1 / -1;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      margin-top: 10px;
+    }
+
+    .form-footer small {
+      max-width: 240px;
+      color: #706e67;
+      font-size: 8px;
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 80px 0 30px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 60px;
+      padding-bottom: 65px;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 60px;
+      letter-spacing: 0.18em;
+      line-height: 1;
+    }
+
+    .footer-brand p {
+      max-width: 310px;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .footer h4 {
+      margin-bottom: 22px;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .footer-list {
+      display: grid;
+      gap: 13px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      list-style: none;
+    }
+
+    .footer-list a:hover {
+      color: var(--text);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
+      color: #64625c;
+      font-size: 8px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    /* Dialog */
+    .success-dialog {
+      width: min(500px, calc(100% - 35px));
+      padding: 55px 40px;
+      border: 1px solid rgba(199, 169, 107, 0.35);
+      background: #12120f;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .success-dialog::backdrop {
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(12px);
+    }
+
+    .success-icon {
+      display: grid;
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 25px;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+      font-size: 25px;
+    }
+
+    .success-dialog h2 {
+      font-family: var(--serif);
+      font-size: 45px;
+      font-weight: 400;
+    }
+
+    .success-dialog p {
+      margin: 15px 0 30px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .dialog-close {
+      padding: 13px 28px;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold-light);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* Responsive */
+    @media (max-width: 1050px) {
+      :root {
+        --container: min(100% - 50px, 900px);
+      }
+
+      .nav-links {
+        gap: 22px;
+      }
+
+      .story-grid,
+      .reservation-grid {
+        gap: 6%;
+      }
+
+      .story-visual {
+        min-height: 550px;
+      }
+
+      .dishes {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-award {
+        right: 5%;
+        width: 110px;
+        height: 110px;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .section {
+        padding: 100px 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-book {
+        display: none;
+      }
+
+      .nav-links {
+        position: fixed;
+        inset: 0;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 28px;
+        background: rgba(10, 10, 9, 0.97);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-20px);
+        transition: 0.5s var(--ease);
+        backdrop-filter: blur(20px);
+      }
+
+      .menu-open .nav-links {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .nav-link {
+        font-family: var(--serif);
+        font-size: 40px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .hero-title {
+        font-size: clamp(4.7rem, 18vw, 8rem);
+      }
+
+      .hero-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .hero-award,
+      .hero-side {
+        display: none;
+      }
+
+      .story-grid,
+      .reservation-grid {
+        grid-template-columns: 1fr;
+        gap: 85px;
+      }
+
+      .story-visual {
+        min-height: 650px;
+      }
+
+      .menu-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .experience-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .experience-card {
+        min-height: auto;
+      }
+
+      .experience-icon {
+        margin-top: 35px;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      :root {
+        --container: calc(100% - 36px);
+      }
+
+      .header {
+        padding: 20px 0;
+      }
+
+      .hero-content {
+        padding-top: 70px;
+      }
+
+      .hero-title {
+        margin-top: 20px;
+        font-size: clamp(4rem, 20vw, 6.4rem);
+        line-height: 0.8;
+      }
+
+      .hero-title .line:nth-child(2) {
+        padding-left: 0.15em;
+      }
+
+      .hero-description {
+        font-size: 12px;
+      }
+
+      .story-visual {
+        min-height: 470px;
+      }
+
+      .image-main {
+        right: 7%;
+      }
+
+      .image-float {
+        bottom: -25px;
+        width: 52%;
+        height: 40%;
+        border-width: 6px;
+      }
+
+      .stats {
+        gap: 12px;
+      }
+
+      .stat strong {
+        font-size: 35px;
+      }
+
+      .stat small {
+        font-size: 7px;
+      }
+
+      .dishes {
+        grid-template-columns: 1fr;
+      }
+
+      .dish-image {
+        height: 420px;
+      }
+
+      .filters {
+        gap: 6px;
+      }
+
+      .filter {
+        padding: 10px 14px;
+      }
+
+      .cinematic {
+        min-height: 75vh;
+      }
+
+      .cinematic-bg {
+        background-attachment: scroll;
+      }
+
+      .booking-form {
+        grid-template-columns: 1fr;
+      }
+
+      .field,
+      .field.full,
+      .form-footer {
+        grid-column: 1;
+      }
+
+      .form-footer {
+        align-items: flex-start;
+        flex-direction: column-reverse;
+      }
+
+      .footer-top {
+        gap: 45px 25px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (pointer: coarse) {
+      .cursor,
+      .cursor-dot {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="loading">
+  <div class="preloader" aria-hidden="true">
+    <div class="loader-content">
+      <div class="loader-logo">NOIR</div>
+      <div class="loader-line"><span id="loaderBar"></span></div>
+      <div class="loader-meta">
+        <span>Curating your experience</span>
+        <span id="loaderNumber">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="noise"></div>
+  <div class="scroll-progress"></div>
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <header class="header">
+    <nav class="nav container" aria-label="Main navigation">
+      <a href="#home" class="logo">NOIR<span>.</span></a>
+
+      <ul class="nav-links">
+        <li><a class="nav-link" href="#story">Our Story</a></li>
+        <li><a class="nav-link" href="#menu">Menu</a></li>
+        <li><a class="nav-link" href="#experiences">Experiences</a></li>
+        <li><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+
+      <a href="#reservation" class="nav-book magnetic">Reserve a table</a>
+
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-media"></div>
+
+      <div class="hero-content container">
+        <div class="eyebrow">Cairo · Est. 2018</div>
+
+        <h1 class="hero-title">
+          <span class="line"><span>Taste beyond</span></span>
+          <span class="line"><span>the ordinary.</span></span>
+        </h1>
+
+        <div class="hero-bottom">
+          <p class="hero-description">
+            A cinematic journey of flavour, fire and artistry. Seasonal ingredients,
+            reimagined through an unforgettable fine dining experience.
+          </p>
+
+          <a href="#reservation" class="button magnetic">
+            <span>Book your experience</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-award">
+        <div>
+          <strong>2025</strong>
+          <small>Culinary<br />Excellence</small>
+        </div>
+      </div>
+
+      <div class="hero-side">Scroll to discover</div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-group">
+          <span>Seasonal Ingredients</span>
+          <span>Open Fire Cooking</span>
+          <span>Curated Wine Pairing</span>
+          <span>Unforgettable Evenings</span>
+        </div>
+        <div class="marquee-group">
+          <span>Seasonal Ingredients</span>
+          <span>Open Fire Cooking</span>
+          <span>Curated Wine Pairing</span>
+          <span>Unforgettable Evenings</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" id="story">
+      <div class="story-grid container">
+        <div class="story-visual reveal">
+          <div class="image-main">
+            <img
+              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1000&q=85"
+              alt="Elegant restaurant interior"
+            />
+          </div>
+          <div class="image-float">
+            <img
+              src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=700&q=85"
+              alt="Chef preparing a signature dish"
+            />
+          </div>
+          <span class="vertical-caption">The art behind every plate</span>
+        </div>
+
+        <div class="story-copy">
+          <span class="section-number reveal">01 / OUR PHILOSOPHY</span>
+          <h2 class="section-title reveal delay-1">
+            Crafted with<br /><em>intention.</em>
+          </h2>
+          <p class="reveal delay-2">
+            NOIR was born from a simple belief: dining should move you. Our kitchen
+            blends contemporary technique with the honesty of exceptional local
+            produce, creating dishes that feel both surprising and familiar.
+          </p>
+          <div class="signature reveal">Alexander Laurent</div>
+
+          <div class="stats reveal">
+            <div class="stat">
+              <strong><span data-count="12">0</span><span>+</span></strong>
+              <small>Signature dishes</small>
+            </div>
+            <div class="stat">
+              <strong><span data-count="7">0</span></strong>
+              <small>Course journey</small>
+            </div>
+            <div class="stat">
+              <strong><span data-count="1">0</span></strong>
+              <small>Shared passion</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section menu-section" id="menu">
+      <div class="container">
+        <div class="menu-header">
+          <div>
+            <span class="section-number reveal">02 / THE MENU</span>
+            <h2 class="section-title reveal delay-1">
+              A study in <em>flavour.</em>
+            </h2>
+          </div>
+
+          <div class="filters reveal" role="group" aria-label="Filter dishes">
+            <button class="filter active" data-filter="all">All</button>
+            <button class="filter" data-filter="starters">Starters</button>
+            <button class="filter" data-filter="mains">Mains</button>
+            <button class="filter" data-filter="desserts">Desserts</button>
+          </div>
+        </div>
+
+        <div class="dishes">
+          <article class="dish reveal" data-category="starters">
+            <div class="dish-image tilt">
+              <span class="dish-tag">Chef's selection</span>
+              <img
+                src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=85"
+                alt="Charred leek with truffle"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Charred Leek</h3>
+                <span class="dish-price">$24</span>
+              </div>
+              <p>Black truffle, smoked almond, aged parmesan and brown butter.</p>
+            </div>
+          </article>
+
+          <article class="dish reveal delay-1" data-category="mains">
+            <div class="dish-image tilt">
+              <span class="dish-tag">Signature</span>
+              <img
+                src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=85"
+                alt="Fire grilled beef"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Ember & Beef</h3>
+                <span class="dish-price">$58</span>
+              </div>
+              <p>Dry-aged beef, smoked shallot, bone marrow and red wine jus.</p>
+            </div>
+          </article>
+
+          <article class="dish reveal delay-2" data-category="mains">
+            <div class="dish-image tilt">
+              <span class="dish-tag">From the coast</span>
+              <img
+                src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=85"
+                alt="Butter poached salmon"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Wild Salmon</h3>
+                <span class="dish-price">$46</span>
+              </div>
+              <p>Butter-poached salmon, sea herbs, citrus beurre blanc and caviar.</p>
+            </div>
+          </article>
+
+          <article class="dish reveal" data-category="starters">
+            <div class="dish-image tilt">
+              <span class="dish-tag">Raw bar</span>
+              <img
+                src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=85"
+                alt="Fine dining seafood selection"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Ocean Jewels</h3>
+                <span class="dish-price">$32</span>
+              </div>
+              <p>Seasonal seafood, yuzu kosho, cucumber and cold-pressed olive oil.</p>
+            </div>
+          </article>
+
+          <article class="dish reveal delay-1" data-category="desserts">
+            <div class="dish-image tilt">
+              <span class="dish-tag">House favourite</span>
+              <img
+                src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=85"
+                alt="Dark chocolate dessert"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Midnight Cacao</h3>
+                <span class="dish-price">$19</span>
+              </div>
+              <p>72% dark chocolate, roasted hazelnut, sea salt and tonka bean.</p>
+            </div>
+          </article>
+
+          <article class="dish reveal delay-2" data-category="desserts">
+            <div class="dish-image tilt">
+              <span class="dish-tag">Seasonal</span>
+              <img
+                src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=85"
+                alt="Vanilla and berry dessert"
+                loading="lazy"
+              />
+            </div>
+            <div class="dish-info">
+              <div class="dish-heading">
+                <h3>Vanilla Cloud</h3>
+                <span class="dish-price">$18</span>
+              </div>
+              <p>Madagascan vanilla, wild berries, white chocolate and elderflower.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cinematic">
+      <div class="cinematic-bg"></div>
+      <div class="container reveal">
+        <div class="quote-mark">“</div>
+        <blockquote>
+          We don't simply serve dinner.<br />We create <em>memories.</em>
+        </blockquote>
+        <small>Alexander Laurent — Executive Chef</small>
+      </div>
+    </section>
+
+    <section class="section" id="experiences">
+      <div class="container">
+        <div class="experiences-header">
+          <span class="section-number reveal">03 / BEYOND DINNER</span>
+          <h2 class="section-title reveal delay-1">
+            Made for your <em>moment.</em>
+          </h2>
+        </div>
+
+        <div class="experience-grid">
+          <article class="experience-card reveal">
+            <span class="experience-number">01</span>
+            <div class="experience-icon">✦</div>
+            <h3>Chef's Table</h3>
+            <p>
+              An intimate seven-course journey served at the heart of our kitchen,
+              personally curated by our executive chef.
+            </p>
+          </article>
+
+          <article class="experience-card reveal delay-1">
+            <span class="experience-number">02</span>
+            <div class="experience-icon">◇</div>
+            <h3>Private Dining</h3>
+            <p>
+              Bespoke menus, considered details and a dedicated team for occasions
+              that deserve something extraordinary.
+            </p>
+          </article>
+
+          <article class="experience-card reveal delay-2">
+            <span class="experience-number">03</span>
+            <div class="experience-icon">◯</div>
+            <h3>Wine Pairing</h3>
+            <p>
+              Rare vintages and unexpected discoveries, selected by our sommelier
+              to elevate every course and conversation.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reservation" id="reservation">
+      <div class="reservation-grid container">
+        <div class="reservation-copy">
+          <span class="section-number reveal">04 / RESERVATIONS</span>
+          <h2 class="section-title reveal delay-1">
+            Your table<br /><em>awaits.</em>
+          </h2>
+          <p class="reveal delay-2">
+            Join us Tuesday through Sunday, from 6 PM until late. For parties of
+            eight or more, please contact our reservations team directly.
+          </p>
+
+          <div class="contact-mini reveal">
+            <a href="tel:+201000000000">+20 100 000 0000</a>
+            <a href="mailto:reservations@noir.com">reservations@noir.com</a>
+            <span>Zamalek, Cairo, Egypt</span>
+          </div>
+        </div>
+
+        <form class="booking-form reveal" id="bookingForm">
+          <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text" placeholder="Your name" required />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="+20 1XX XXX XXXX"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="date">Preferred date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+
+          <div class="field">
+            <label for="time">Preferred time</label>
+            <select id="time" name="time" required>
+              <option value="">Select time</option>
+              <option>6:00 PM</option>
+              <option>6:30 PM</option>
+              <option>7:00 PM</option>
+              <option>7:30 PM</option>
+              <option>8:00 PM</option>
+              <option>8:30 PM</option>
+              <option>9:00 PM</option>
+              <option>9:30 PM</option>
+              <option>10:00 PM</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="guests">Number of guests</label>
+            <select id="guests" name="guests" required>
+              <option value="">Select party size</option>
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5">5 Guests</option>
+              <option value="6">6 Guests</option>
+              <option value="7">7 Guests</option>
+              <option value="8+">8+ Guests</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="notes">Special requests</label>
+            <textarea
+              id="notes"
+              name="notes"
+              placeholder="Allergies, celebrations, or anything we should know..."
+            ></textarea>
+          </div>
+
+          <div class="form-footer">
+            <small>
+              This is a front-end demonstration. Connect the form to your booking
+              system to receive real reservations.
+            </small>
+            <button class="button magnetic" type="submit">
+              <span>Request table</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">NOIR.</div>
+          <p>
+            Contemporary fine dining rooted in seasonality, craft and the simple
+            pleasure of sharing an exceptional table.
+          </p>
+        </div>
+
+        <div>
+          <h4>Visit us</h4>
+          <ul class="footer-list">
+            <li>12 Brazil Street, Zamalek</li>
+            <li>Cairo, Egypt</li>
+            <li>Tuesday — Sunday</li>
+            <li>6:00 PM — Late</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Follow</h4>
+          <ul class="footer-list">
+            <li><a href="#">Instagram ↗</a></li>
+            <li><a href="#">Facebook ↗</a></li>
+            <li><a href="#">TikTok ↗</a></li>
+            <li><a href="mailto:hello@noir.com">hello@noir.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> NOIR Restaurant. All rights reserved.</span>
+        <span>Designed for unforgettable evenings.</span>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="success-dialog" id="successDialog">
+    <div class="success-icon">✓</div>
+    <h2>Request received.</h2>
+    <p id="successMessage">
+      Thank you. Our reservations team will contact you shortly to confirm your
+      table.
+    </p>
+    <button class="dialog-close" type="button">Continue</button>
+  </dialog>
+
+  <script>
+    const body = document.body;
+    const header = document.querySelector(".header");
+    const progressBar = document.querySelector(".scroll-progress");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* Preloader */
+    const loader = document.querySelector(".preloader");
+    const loaderBar = document.getElementById("loaderBar");
+    const loaderNumber = document.getElementById("loaderNumber");
+    let progress = 0;
+    let pageLoaded = false;
+
+    const loadingTimer = setInterval(() => {
+      const limit = pageLoaded ? 100 : 88;
+      progress = Math.min(progress + Math.random() * 9 + 2, limit);
+      loaderBar.style.width = progress + "%";
+      loaderNumber.textContent = Math.floor(progress);
+
+      if (progress >= 100) {
+        clearInterval(loadingTimer);
+        setTimeout(finishLoading, 250);
+      }
+    }, 70);
+
+    function finishLoading() {
+      loader.classList.add("done");
+      body.classList.remove("loading");
+      body.classList.add("is-loaded");
+    }
+
+    window.addEventListener("load", () => {
+      pageLoaded = true;
+    });
+
+    setTimeout(() => {
+      pageLoaded = true;
+    }, 2500);
+
+    /* Header and reading progress */
+    function updateOnScroll() {
+      const scrollTop = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+      header.classList.toggle("scrolled", scrollTop > 50);
+      progressBar.style.width = (maxScroll > 0 ? scrollTop / maxScroll : 0) * 100 + "%";
+    }
+
+    window.addEventListener("scroll", updateOnScroll, { passive: true });
+    updateOnScroll();
+
+    /* Mobile navigation */
+    const menuToggle = document.querySelector(".menu-toggle");
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = body.classList.toggle("menu-open");
+      menuToggle.setAttribute("aria-expanded", isOpen);
+    });
+
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        body.classList.remove("menu-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    /* Reveal animations */
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px" }
+    );
+
+    document.querySelectorAll(".reveal").forEach((element) => {
+      revealObserver.observe(element);
+    });
+
+    /* Animated counters */
+    const counterObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const element = entry.target;
+          const target = Number(element.dataset.count);
+          const duration = 1400;
+          const start = performance.now();
+
+          function count(now) {
+            const elapsed = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - elapsed, 3);
+            element.textContent = Math.floor(target * eased);
+
+            if (elapsed < 1) requestAnimationFrame(count);
+          }
+
+          requestAnimationFrame(count);
+          observer.unobserve(element);
+        });
+      },
+      { threshold: 0.7 }
+    );
+
+    document.querySelectorAll("[data-count]").forEach((counter) => {
+      counterObserver.observe(counter);
+    });
+
+    /* Menu filters */
+    const filters = document.querySelectorAll(".filter");
+    const dishes = document.querySelectorAll(".dish");
+
+    filters.forEach((button) => {
+      button.addEventListener("click", () => {
+        filters.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+
+        const category = button.dataset.filter;
+
+        dishes.forEach((dish) => {
+          const show = category === "all" || dish.dataset.category === category;
+          dish.classList.toggle("is-hidden", !show);
+
+          if (show) {
+            dish.style.animation = "none";
+            dish.offsetHeight;
+            dish.style.animation = "";
+          }
+        });
+      });
+    });
+
+    /* Custom cursor and magnetic buttons */
+    if (window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
+      const cursor = document.querySelector(".cursor");
+      const cursorDot = document.querySelector(".cursor-dot");
+      let mouseX = -100;
+      let mouseY = -100;
+      let cursorX = -100;
+      let cursorY = -100;
+
+      window.addEventListener("mousemove", (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+        cursorDot.style.left = mouseX + "px";
+        cursorDot.style.top = mouseY + "px";
+      });
+
+      function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.16;
+        cursorY += (mouseY - cursorY) * 0.16;
+        cursor.style.left = cursorX + "px";
+        cursor.style.top = cursorY + "px";
+        requestAnimationFrame(animateCursor);
+      }
+
+      animateCursor();
+
+      document.querySelectorAll("a, button, .dish-image").forEach((element) => {
+        element.addEventListener("mouseenter", () => cursor.classList.add("active"));
+        element.addEventListener("mouseleave", () => cursor.classList.remove("active"));
+      });
+
+      document.querySelectorAll(".magnetic").forEach((element) => {
+        element.addEventListener("mousemove", (event) => {
+          const rect = element.getBoundingClientRect();
+          const x = event.clientX - rect.left - rect.width / 2;
+          const y = event.clientY - rect.top - rect.height / 2;
+          element.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+        });
+
+        element.addEventListener("mouseleave", () => {
+          element.style.transform = "";
+        });
+      });
+
+      /* Subtle 3D tilt */
+      document.querySelectorAll(".tilt").forEach((card) => {
+        card.addEventListener("mousemove", (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - 0.5;
+          const y = (event.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `perspective(900px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+          card.style.transform = "";
+        });
+      });
+    }
+
+    /* Booking form demonstration */
+    const bookingForm = document.getElementById("bookingForm");
+    const successDialog = document.getElementById("successDialog");
+    const successMessage = document.getElementById("successMessage");
+    const dateInput = document.getElementById("date");
+
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    dateInput.min = localDate;
+
+    bookingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const data = new FormData(bookingForm);
+      const firstName = data.get("name").trim().split(" ")[0];
+
+      successMessage.textContent =
+        `Thank you, ${firstName}. Your request for ${data.get("guests")} guest(s) ` +
+        `on ${data.get("date")} at ${data.get("time")} has been received.`;
+
+      successDialog.showModal();
+      bookingForm.reset();
+    });
+
+    document.querySelector(".dialog-close").addEventListener("click", () => {
+      successDialog.close();
+    });
+
+    successDialog.addEventListener("click", (event) => {
+      const rect = successDialog.getBoundingClientRect();
+      const outside =
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom;
+
+      if (outside) successDialog.close();
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
