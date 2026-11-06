@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حَطَب | مشاوي على نار الحطب</title>
+<meta name="description" content="حَطَب — مطعم مشاوي على نار الحطب. جمر حي، حطب بلوط، وتوابل تُطحن في مطبخنا كل صباح.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   HATAB — Brand Design Tokens
+   ========================================================== */
+:root{
+  --ink:#0F0D0A;
+  --charcoal:#17120E;
+  --coal:#221A14;
+  --ember:#E85D2A;
+  --ember-2:#FF8A3D;
+  --gold:#D4A24C;
+  --cream:#F6EFE4;
+  --sand:#E4D7C2;
+  --muted:#A79885;
+  --line:rgba(246,239,228,.10);
+  --radius:18px;
+  --radius-lg:26px;
+  --shadow:0 24px 60px -24px rgba(0,0,0,.85);
+  --font-body:'Cairo',system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:'Reem Kufi','Cairo',serif;
+  --wrap:1200px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--cream);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.85;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+ul{margin:0;padding:0;list-style:none}
+
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.35;margin:0;letter-spacing:0}
+h1{font-size:clamp(2.1rem,5.6vw,4.4rem);line-height:1.2}
+h2{font-size:clamp(1.7rem,3.6vw,2.8rem)}
+h3{font-size:1.15rem}
+p{margin:0}
+
+.wrap{width:min(100% - 2.5rem,var(--wrap));margin-inline:auto}
+.section{padding:clamp(4.5rem,9vw,8rem) 0;position:relative;scroll-margin-top:80px}
+
+/* ---------- Reusable bits ---------- */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-size:.74rem;font-weight:700;letter-spacing:.18em;
+  color:var(--gold);text-transform:uppercase;
+  padding:.4rem .9rem;border:1px solid rgba(212,162,76,.35);
+  border-radius:100px;background:rgba(212,162,76,.07);
+  margin-bottom:1.2rem;
+}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ember);box-shadow:0 0 12px var(--ember)}
+
+.lead{color:var(--muted);font-size:1.03rem;max-width:60ch}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  padding:.95rem 1.9rem;border-radius:100px;border:1px solid transparent;
+  font-weight:700;font-size:.95rem;cursor:pointer;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s,color .25s,border-color .25s;
+  white-space:nowrap;
+}
+.btn:hover{transform:translateY(-3px)}
+.btn--primary{
+  background:linear-gradient(135deg,var(--ember),#C7431A);
+  color:#fff;box-shadow:0 14px 34px -14px rgba(232,93,42,.9);
+}
+.btn--primary:hover{box-shadow:0 20px 44px -14px rgba(232,93,42,1)}
+.btn--ghost{background:transparent;color:var(--cream);border-color:rgba(246,239,228,.22)}
+.btn--ghost:hover{border-color:var(--ember);color:var(--ember-2);background:rgba(232,93,42,.07)}
+.btn--gold{background:var(--gold);color:var(--ink)}
+.btn--full{width:100%}
+
+/* ---------- Reveal on scroll ---------- */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+.header{
+  position:fixed;inset-inline:0;top:0;z-index:100;
+  padding:1rem 0;transition:background .35s,padding .35s,border-color .35s,backdrop-filter .35s;
+  border-bottom:1px solid transparent;
+}
+.header.scrolled{
+  background:rgba(15,13,10,.86);
+  backdrop-filter:blur(14px) saturate(140%);
+  padding:.55rem 0;
+  border-bottom-color:var(--line);
+}
+.header__inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
+
+.logo{display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+.logo svg{width:36px;height:36px}
+.logo__text{display:flex;flex-direction:column;line-height:1.1}
+.logo__name{font-family:var(--font-display);font-weight:700;font-size:1.35rem;letter-spacing:.02em}
+.logo__tag{font-size:.6rem;letter-spacing:.28em;color:var(--gold);font-weight:600}
+
+.nav{display:flex;align-items:center;gap:.35rem}
+.nav a{
+  position:relative;padding:.5rem .95rem;border-radius:100px;
+  font-size:.92rem;font-weight:600;color:rgba(246,239,228,.74);
+  transition:color .25s,background .25s;
+}
+.nav a:hover,.nav a.active{color:var(--cream);background:rgba(246,239,228,.06)}
+.nav a.active::after{
+  content:"";position:absolute;bottom:.18rem;inset-inline:35%;
+  height:2px;border-radius:2px;background:var(--ember);
+}
+
+.header__cta{display:flex;align-items:center;gap:.6rem}
+.header__cta .btn{padding:.7rem 1.4rem;font-size:.88rem}
+
+.burger{
+  display:none;width:44px;height:44px;border-radius:12px;
+  background:rgba(246,239,228,.06);border:1px solid var(--line);
+  cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+.burger span{display:block;width:19px;height:2px;background:var(--cream);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ==========================================================
+   HERO
+   ========================================================== */
+.hero{
+  position:relative;min-height:100svh;display:flex;align-items:center;
+  padding:9rem 0 5rem;overflow:hidden;
+  background:
+    radial-gradient(950px 620px at 82% 8%,rgba(232,93,42,.34),transparent 62%),
+    radial-gradient(760px 620px at 10% 92%,rgba(212,162,76,.16),transparent 62%),
+    linear-gradient(180deg,#0F0D0A 0%,#181210 55%,#0F0D0A 100%);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(246,239,228,.055) 1px,transparent 1px);
+  background-size:26px 26px;
+  mask-image:radial-gradient(circle at 50% 40%,#000 15%,transparent 78%);
+  pointer-events:none;
+}
+.hero__grid{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;align-items:center;
+}
+.hero h1 .accent{
+  background:linear-gradient(120deg,var(--ember-2),var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero__sub{margin-top:1.6rem;font-size:clamp(.98rem,1.4vw,1.1rem);color:var(--muted);max-width:50ch}
+.hero__actions{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2.4rem}
+
+.hero__stats{
+  display:flex;gap:2.5rem;margin-top:3.4rem;padding-top:2rem;
+  border-top:1px solid var(--line);flex-wrap:wrap;
+}
+.stat b{display:block;font-family:var(--font-display);font-size:1.85rem;color:var(--cream);line-height:1.1}
+.stat span{font-size:.78rem;color:var(--muted);letter-spacing:.05em}
+
+/* Hero visual — stylised ember plate */
+.hero__visual{position:relative;display:grid;place-items:center;min-height:400px}
+.ember{
+  position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,93,42,.55),rgba(232,93,42,0) 68%);
+  filter:blur(30px);animation:pulse 5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+
+.plate{
+  position:relative;width:min(360px,80vw);aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.14),transparent 55%),
+    conic-gradient(from 200deg,#2A1E16,#3B281B,#241810,#332217,#2A1E16);
+  border:1px solid rgba(212,162,76,.32);
+  display:grid;place-items:center;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.95), inset 0 0 60px rgba(0,0,0,.6);
+  animation:float 7s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.plate::after{
+  content:"";position:absolute;inset:11%;border-radius:50%;
+  border:1px dashed rgba(212,162,76,.22);
+}
+.plate__icon{font-size:6.2rem;filter:drop-shadow(0 12px 26px rgba(0,0,0,.75))}
+
+.badge{
+  position:absolute;background:rgba(23,18,14,.9);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:14px;padding:.7rem 1.05rem;
+  display:flex;align-items:center;gap:.6rem;font-size:.82rem;font-weight:600;
+  box-shadow:var(--shadow);
+}
+.badge--tl{top:6%;inset-inline-start:-4%;animation:float 6s ease-in-out infinite .8s}
+.badge--br{bottom:10%;inset-inline-end:-6%;animation:float 6.5s ease-in-out infinite .4s}
+.badge i{font-style:normal;font-size:1.1rem}
+.badge small{display:block;color:var(--muted);font-weight:400;font-size:.68rem;letter-spacing:.04em}
+
+/* ==========================================================
+   MARQUEE
+   ========================================================== */
+.marquee{
+  border-block:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(232,93,42,.07),rgba(212,162,76,.05));
+  padding:1.1rem 0;overflow:hidden;white-space:nowrap;
+}
+.marquee__track{display:inline-flex;gap:3rem;animation:slide 26s linear infinite}
+.marquee span{
+  font-family:var(--font-display);font-size:1.05rem;color:rgba(246,239,228,.55);
+  display:inline-flex;align-items:center;gap:3rem;
+}
+.marquee span::after{content:"◆";color:var(--ember);font-size:.55rem}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ==========================================================
+   ABOUT
+   ========================================================== */
+.about__grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+
+.about__art{
+  position:relative;border-radius:var(--radius-lg);overflow:hidden;
+  aspect-ratio:4/5;max-height:560px;
+  background:
+    radial-gradient(120% 90% at 70% 15%,rgba(232,93,42,.5),transparent 58%),
+    linear-gradient(160deg,#2A1C13,#120D0A 70%);
+  border:1px solid rgba(212,162,76,.2);
+  display:grid;place-items:center;
+  box-shadow:var(--shadow);
+}
+.about__art::before{
+  content:"";position:absolute;inset:0;
+  background-image:repeating-linear-gradient(115deg,rgba(0,0,0,.28) 0 2px,transparent 2px 17px);
+  opacity:.5;
+}
+.about__art span{font-size:8rem;position:relative;filter:drop-shadow(0 16px 30px rgba(0,0,0,.7))}
+.about__stamp{
+  position:absolute;bottom:1.6rem;inset-inline-start:1.6rem;
+  background:var(--gold);color:var(--ink);font-weight:900;font-size:.72rem;
+  letter-spacing:.15em;padding:.5rem 1rem;border-radius:100px;
+  font-family:var(--font-display);
+}
+
+.pillars{display:grid;gap:1rem;margin-top:2.2rem}
+.pillar{
+  display:flex;gap:1rem;padding:1.1rem 1.2rem;border-radius:var(--radius);
+  background:rgba(246,239,228,.032);border:1px solid var(--line);
+  transition:border-color .3s,transform .3s,background .3s;
+}
+.pillar:hover{border-color:rgba(232,93,42,.4);transform:translateX(-6px);background:rgba(232,93,42,.05)}
+.pillar__ico{
+  flex-shrink:0;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(232,93,42,.22),rgba(212,162,76,.12));
+  border:1px solid rgba(232,93,42,.28);font-size:1.15rem;
+}
+.pillar h3{margin-bottom:.15rem;font-size:1rem}
+.pillar p{font-size:.87rem;color:var(--muted);line-height:1.7}
+
+/* ==========================================================
+   MENU
+   ========================================================== */
+.section--alt{background:linear-gradient(180deg,#120E0B,#0F0D0A)}
+.head{text-align:center;max-width:620px;margin-inline:auto;margin-bottom:3rem}
+.head .lead{margin-inline:auto}
+
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-bottom:3rem}
+.tab{
+  padding:.6rem 1.3rem;border-radius:100px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);font-weight:600;font-size:.9rem;
+  cursor:pointer;transition:.28s;
+}
+.tab:hover{color:var(--cream);border-color:rgba(246,239,228,.28)}
+.tab.active{
+  background:linear-gradient(135deg,var(--ember),#C7431A);
+  border-color:transparent;color:#fff;box-shadow:0 10px 26px -12px rgba(232,93,42,.9);
+}
+
+.menu{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+  gap:1rem;
+}
+.dish{
+  display:flex;gap:1rem;align-items:flex-start;padding:1.3rem;
+  border-radius:var(--radius);background:rgba(246,239,228,.03);
+  border:1px solid var(--line);transition:.35s;
+}
+.dish:hover{background:rgba(246,239,228,.055);border-color:rgba(212,162,76,.3);transform:translateY(-4px)}
+.dish.hide{display:none}
+.dish__ico{
+  flex-shrink:0;width:54px;height:54px;border-radius:14px;display:grid;place-items:center;
+  font-size:1.6rem;background:linear-gradient(150deg,#2A1C13,#15100C);
+  border:1px solid rgba(212,162,76,.2);
+}
+.dish__body{flex:1;min-width:0}
+.dish__top{display:flex;align-items:baseline;gap:.6rem}
+.dish__top h3{font-size:1.02rem;white-space:nowrap}
+.dish__line{flex:1;border-bottom:1px dotted rgba(246,239,228,.2);transform:translateY(-4px)}
+.dish__price{font-family:var(--font-display);color:var(--gold);font-weight:700;white-space:nowrap}
+.dish p{font-size:.83rem;color:var(--muted);margin-top:.25rem;line-height:1.65}
+.tag{
+  display:inline-block;margin-top:.5rem;font-size:.68rem;font-weight:700;
+  color:var(--ember-2);background:rgba(232,93,42,.12);
+  border:1px solid rgba(232,93,42,.28);padding:.15rem .6rem;border-radius:100px;
+}
+
+/* ==========================================================
+   SIGNATURE
+   ========================================================== */
+.sig{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.3rem}
+.card{
+  position:relative;border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--line);background:var(--coal);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s,box-shadow .4s;
+}
+.card:hover{transform:translateY(-9px);border-color:rgba(232,93,42,.42);box-shadow:var(--shadow)}
+.card__art{
+  height:190px;display:grid;place-items:center;font-size:4rem;position:relative;
+  background:radial-gradient(120% 100% at 70% 10%,rgba(232,93,42,.55),transparent 60%),
+             linear-gradient(150deg,#2E1E14,#130E0B);
+}
+.card__art::after{
+  content:"";position:absolute;inset:0;
+  background-image:repeating-linear-gradient(-45deg,rgba(0,0,0,.22) 0 2px,transparent 2px 14px);
+}
+.card__art span{position:relative;z-index:1;filter:drop-shadow(0 12px 22px rgba(0,0,0,.7))}
+.card__body{padding:1.4rem}
+.card__body h3{font-size:1.15rem;margin-bottom:.35rem}
+.card__body p{font-size:.86rem;color:var(--muted)}
+.card__foot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem}
+.card__price{font-family:var(--font-display);font-size:1.3rem;color:var(--gold)}
+.rate{font-size:.8rem;color:var(--muted)}
+.rate b{color:var(--cream)}
+
+/* ==========================================================
+   TESTIMONIALS
+   ========================================================== */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem}
+.quote{
+  padding:1.7rem;border-radius:var(--radius);border:1px solid var(--line);
+  background:rgba(246,239,228,.028);position:relative;transition:.35s;
+}
+.quote:hover{border-color:rgba(212,162,76,.32);background:rgba(246,239,228,.05)}
+.quote::before{
+  content:"”";position:absolute;top:.4rem;inset-inline-end:1.2rem;
+  font-family:var(--font-display);font-size:4.5rem;color:rgba(232,93,42,.22);line-height:1;
+}
+.quote p{font-size:.92rem;color:var(--sand);position:relative;z-index:1}
+.quote__who{display:flex;align-items:center;gap:.75rem;margin-top:1.3rem}
+.avatar{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--ember),var(--gold));
+  color:#fff;font-weight:900;font-size:.9rem;font-family:var(--font-display);
+}
+.quote__who b{display:block;font-size:.88rem}
+.quote__who small{color:var(--muted);font-size:.75rem}
+.stars{color:var(--gold);font-size:.8rem;letter-spacing:.15em}
+
+/* ==========================================================
+   RESERVATION
+   ========================================================== */
+.booking{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(2rem,5vw,4rem);align-items:start}
+.booking__info li{display:flex;gap:.9rem;padding:.85rem 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.booking__info li:last-child{border-bottom:0}
+.booking__info i{
+  font-style:normal;width:38px;height:38px;flex-shrink:0;border-radius:11px;
+  display:grid;place-items:center;background:rgba(232,93,42,.1);
+  border:1px solid rgba(232,93,42,.25);font-size:1rem;
+}
+.booking__info b{display:block;font-size:.78rem;color:var(--muted);font-weight:500}
+.booking__info span{font-weight:600}
+
+.form{
+  padding:clamp(1.5rem,3vw,2.2rem);border-radius:var(--radius-lg);
+  background:linear-gradient(160deg,rgba(246,239,228,.06),rgba(246,239,228,.02));
+  border:1px solid var(--line);box-shadow:var(--shadow);
+}
+.form__row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.field{margin-bottom:1rem;display:flex;flex-direction:column;gap:.4rem}
+.field label{font-size:.8rem;font-weight:600;color:var(--sand)}
+.field input,.field select,.field textarea{
+  width:100%;padding:.8rem 1rem;border-radius:12px;
+  background:rgba(15,13,10,.75);border:1px solid var(--line);
+  color:var(--cream);font-family:inherit;font-size:.92rem;transition:.25s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--ember);box-shadow:0 0 0 4px rgba(232,93,42,.14);
+}
+.field input::placeholder,.field textarea::placeholder{color:#6B6157}
+.field textarea{resize:vertical;min-height:88px}
+.field select option{background:#17120E}
+.field .err{font-size:.72rem;color:#FF7A5C;display:none}
+.field.invalid input,.field.invalid select{border-color:#FF7A5C}
+.field.invalid .err{display:block}
+
+.form__note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:.9rem}
+.toast{
+  margin-top:1rem;padding:.9rem 1.1rem;border-radius:12px;font-size:.88rem;font-weight:600;
+  background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.4);color:#9CE0A4;
+  display:none;text-align:center;
+}
+.toast.show{display:block;animation:pop .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ==========================================================
+   LOCATION
+   ========================================================== */
+.loc{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+.loc__map{
+  position:relative;border-radius:var(--radius-lg);overflow:hidden;min-height:340px;
+  background:
+    linear-gradient(160deg,#14100D,#0C0A08),
+    repeating-linear-gradient(0deg,rgba(246,239,228,.05) 0 1px,transparent 1px 44px);
+  border:1px solid var(--line);
+}
+.loc__map::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(246,239,228,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(246,239,228,.055) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.loc__map::after{
+  content:"";position:absolute;inset-inline:0;top:52%;
+  height:2px;background:linear-gradient(90deg,transparent,rgba(212,162,76,.45),transparent);
+}
+.pin{
+  position:absolute;top:44%;inset-inline-start:46%;transform:translate(-50%,-50%);
+  width:16px;height:16px;border-radius:50%;background:var(--ember);
+  box-shadow:0 0 0 8px rgba(232,93,42,.2),0 0 0 18px rgba(232,93,42,.08);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.loc__cards{display:grid;gap:1.3rem}
+.loc__card{
+  padding:1.6rem;border-radius:var(--radius);border:1px solid var(--line);
+  background:rgba(246,239,228,.03);transition:.3s;
+}
+.loc__card:hover{border-color:rgba(212,162,76,.3);background:rgba(246,239,228,.05)}
+.loc__card h3{margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.hours{display:grid;gap:.5rem}
+.hours div{display:flex;justify-content:space-between;font-size:.88rem;padding:.45rem 0;border-bottom:1px dashed var(--line)}
+.hours div:last-child{border:0}
+.hours span:last-child{color:var(--gold);font-weight:700;font-family:var(--font-display)}
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+.footer{
+  border-top:1px solid var(--line);padding:4rem 0 2rem;
+  background:linear-gradient(180deg,#0F0D0A,#0A0907);
+}
+.footer__grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.4fr;gap:2.5rem}
+.footer p{font-size:.87rem;color:var(--muted)}
+.footer h4{font-size:.82rem;letter-spacing:.16em;color:var(--gold);margin-bottom:1.1rem;text-transform:uppercase;font-family:var(--font-body);font-weight:700}
+.footer__links a{display:block;font-size:.88rem;color:var(--muted);padding:.28rem 0;transition:.25s}
+.footer__links a:hover{color:var(--ember-2);transform:translateX(-5px)}
+.socials{display:flex;gap:.55rem;margin-top:1.2rem}
+.socials a{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  border:1px solid var(--line);background:rgba(246,239,228,.04);
+  transition:.3s;color:var(--sand);
+}
+.socials a:hover{background:var(--ember);border-color:var(--ember);color:#fff;transform:translateY(-3px)}
+.socials svg{width:17px;height:17px;fill:currentColor}
+
+.subscribe{display:flex;gap:.5rem;margin-top:1rem}
+.subscribe input{
+  flex:1;padding:.75rem 1rem;border-radius:12px;background:rgba(15,13,10,.8);
+  border:1px solid var(--line);color:var(--cream);font-family:inherit;font-size:.86rem;
+}
+.subscribe input:focus{outline:none;border-color:var(--ember)}
+.subscribe button{
+  padding:.75rem 1.2rem;border-radius:12px;border:0;cursor:pointer;
+  background:var(--gold);color:var(--ink);font-weight:800;font-size:.86rem;transition:.25s;
+}
+.subscribe button:hover{background:var(--ember-2)}
+
+.footer__bottom{
+  margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+  font-size:.8rem;color:var(--muted);
+}
+
+/* ---------- Back to top ---------- */
+.top{
+  position:fixed;inset-inline-end:1.4rem;bottom:1.4rem;z-index:90;
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--ember),#C7431A);color:#fff;font-size:1.1rem;
+  border:0;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);
+  transition:.35s;box-shadow:0 14px 34px -12px rgba(232,93,42,.9);
+}
+.top.show{opacity:1;visibility:visible;transform:none}
+.top:hover{transform:translateY(-4px)}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media(max-width:1024px){
+  .hero__grid{grid-template-columns:1fr;gap:3rem;text-align:center}
+  .hero .lead,.hero__sub{margin-inline:auto}
+  .hero__actions,.hero__stats{justify-content:center}
+  .hero__visual{order:-1;min-height:300px}
+  .about__grid,.booking,.loc{grid-template-columns:1fr}
+  .about__art{max-height:400px;aspect-ratio:16/10}
+  .footer__grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+  .nav{
+    position:fixed;inset:0 0 0 0;top:0;height:100svh;
+    flex-direction:column;justify-content:center;gap:.5rem;
+    background:rgba(12,10,8,.97);backdrop-filter:blur(18px);
+    transform:translateX(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+    padding:2rem;z-index:99;
+  }
+  .nav.open{transform:none}
+  .nav a{font-size:1.25rem;padding:.75rem 1.6rem;font-family:var(--font-display)}
+  .burger{display:flex;z-index:101}
+  .header__cta .btn{display:none}
+}
+@media(max-width:600px){
+  .form__row{grid-template-columns:1fr}
+  .footer__grid{grid-template-columns:1fr}
+  .hero__stats{gap:1.6rem}
+  .badge--tl{inset-inline-start:0}
+  .badge--br{inset-inline-end:0}
+  .dish__top h3{white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="header" id="header">
+  <div class="wrap header__inner">
+
+    <a href="#home" class="logo" aria-label="حَطَب — الصفحة الرئيسية">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="48" x2="48" y2="0">
+            <stop offset="0" stop-color="#E85D2A"/>
+            <stop offset="1" stop-color="#D4A24C"/>
+          </linearGradient>
+        </defs>
+        <path d="M7 42V22a17 17 0 0 1 34 0v20" stroke="url(#lg)" stroke-width="3"
+              stroke-linecap="round" opacity=".55"/>
+        <path d="M24 9c2.6 6.4 8 8.6 8 15a8 8 0 0 1-16 0c0-6.4 5.4-8.6 8-15z" fill="url(#lg)"/>
+        <path d="M24 22c1.1 2.6 3.4 3.6 3.4 6.3a3.4 3.4 0 0 1-6.8 0c0-2.7 2.3-3.7 3.4-6.3z" fill="#0F0D0A"/>
+      </svg>
+      <span class="logo__text">
+        <span class="logo__name">حَطَب</span>
+        <span class="logo__tag">HATAB GRILL</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="القائمة الرئيسية">
+      <a href="#home" class="active">الرئيسية</a>
+      <a href="#about">عن المطعم</a>
+      <a href="#menu">القائمة</a>
+      <a href="#signature">الأطباق المميزة</a>
+      <a href="#reviews">آراء الضيوف</a>
+      <a href="#booking">الحجز</a>
+    </nav>
+
+    <div class="header__cta">
+      <a href="#booking" class="btn btn--primary">احجز طاولتك 🔥</a>
+      <button class="burger" id="burger" aria-label="فتح القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="home">
+  <div class="wrap hero__grid">
+
+    <div class="hero__content">
+      <span class="eyebrow">مشاوي على نار الحطب</span>
+      <h1>طعمٌ من قلب <span class="accent">الجَمر</span><br>ونكهةٌ لا تُستعجل</h1>
+      <p class="hero__sub">
+        في «حَطَب» نُشعل حطب البلوط ببطء، ونمنح اللحم وقته الكامل على الجمر الحيّ.
+        لا مسرّعات، لا اختصارات — فقط نار، ودخان، وصبرٌ يستحقّه الطعم.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#booking" class="btn btn--primary">احجز طاولتك الآن</a>
+        <a href="#menu" class="btn btn--ghost">تصفّح القائمة</a>
+      </div>
+
+      <div class="hero__stats">
+        <div class="stat"><b>+12</b><span>سنة على الجمر</span></div>
+        <div class="stat"><b>4.9</b><span>تقييم الضيوف</span></div>
+        <div class="stat"><b>+30</b><span>طبقًا أصيلًا</span></div>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <div class="ember" aria-hidden="true"></div>
+      <div class="plate">
+        <span class="plate__icon">🔥</span>
+      </div>
+      <div class="badge badge--tl">
+        <i>🌳</i>
+        <div>حطب بلوط طبيعي<small>يُشعل يوميًا في الساعة 4 عصرًا</small></div>
+      </div>
+      <div class="badge badge--br">
+        <i>🧂</i>
+        <div>توابل تُطحن هنا<small>خلطة البيت السرّية</small></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== MARQUEE ==================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>جمر حيّ</span><span>حطب بلوط</span><span>لحم طازج يوميًا</span>
+    <span>توابل البيت</span><span>خبز التنّور</span><span>طعمٌ أصيل</span>
+    <span>جمر حيّ</span><span>حطب بلوط</span><span>لحم طازج يوميًا</span>
+    <span>توابل البيت</span><span>خبز التنّور</span><span>طعمٌ أصيل</span>
+  </div>
+</div>
+
+<!-- ==================== ABOUT ==================== -->
+<section class="section" id="about">
+  <div class="wrap about__grid">
+
+    <div class="about__art reveal">
+      <span>🪵</span>
+      <div class="about__stamp">EST. 2013</div>
+    </div>
+
+    <div class="reveal">
+      <span class="eyebrow">قصّتنا</span>
+      <h2>بدأنا بمنقلٍ واحد… وحكايةٍ لا تُطفأ</h2>
+      <p class="lead" style="margin-top:1.2rem">
+        قبل اثنتي عشرة سنة، وقفنا في زاويةٍ ضيّقة بمنقلٍ صغير وحطبٍ وأصابعَ تحترف الصبر.
+        لم نكن نبحث عن طبق سريع، بل عن تلك اللحظة التي يصمت فيها الكلام ويبدأ الطعم بالحديث.
+        اليوم كبرت الزاوية، لكن النار ما زالت تُشعل بنفس الطريقة — يدويًا، وببطء، وباحترام.
+      </p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar__ico">🌳</div>
+          <div>
+            <h3>حطب بلوط مُنتقى</h3>
+            <p>نستورد حطب البلوط المُعتّق ليمنح اللحم دخانًا حلوًا خفيفًا بلا لسعة حرق.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar__ico">🥩</div>
+          <div>
+            <h3>لحم طازج كل صباح</h3>
+            <p>وصول يومي من مزارع محلية مختارة، وتقطيع داخل المطبخ — لا تجميد إطلاقًا.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar__ico">🧂</div>
+          <div>
+            <h3>توابل تُطحن لحظيًا</h3>
+            <p>خلطة «حَطَب» تُطحن في مطبخنا كل صباح، وبكميات تكفي اليوم فقط.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== MENU ==================== -->
+<section class="section section--alt" id="menu">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">القائمة</span>
+      <h2>ما يخرج من الجَمر</h2>
+      <p class="lead" style="margin-top:1rem">قائمة مختصرة عن قصد — كل طبق يستحق مكانه على الجمر.</p>
+    </div>
+
+    <div class="tabs reveal" id="tabs">
+      <button class="tab active" data-cat="all">الكل</button>
+      <button class="tab" data-cat="grill">المشاوي</button>
+      <button class="tab" data-cat="starters">المقبلات</button>
+      <button class="tab" data-cat="mains">الأطباق الرئيسية</button>
+      <button class="tab" data-cat="dessert">الحلويات</button>
+      <button class="tab" data-cat="drinks">المشروبات</button>
+    </div>
+
+    <div class="menu" id="menuGrid">
+
+      <article class="dish" data-cat="grill">
+        <div class="dish__ico">🥩</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>ريب آي على الجمر</h3><span class="dish__line"></span><span class="dish__price">189</span></div>
+          <p>قطعة 400غ معتّقة 21 يومًا، تُشوى على حرارة مباشرة وتُترك 8 دقائق راحة.</p>
+          <span class="tag">الأكثر طلبًا</span>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="grill">
+        <div class="dish__ico">🍢</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>كباب حَطَب</h3><span class="dish__line"></span><span class="dish__price">96</span></div>
+          <p>لحم غنم مفروم مع البقدونس والبصل، على أسياخ حديدية فوق الجمر الحيّ.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="grill">
+        <div class="dish__ico">🍗</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>دجاج مسحّب بالزعفران</h3><span class="dish__line"></span><span class="dish__price">78</span></div>
+          <p>نصف دجاجة بلدية مُنقّعة 12 ساعة في اللبن والزعفران، ثم على الفحم.</p>
+          <span class="tag">حار قليلًا</span>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="grill">
+        <div class="dish__ico">🐟</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>سمك مشوي على قرميد</h3><span class="dish__line"></span><span class="dish__price">135</span></div>
+          <p>فيليه طازج بزيت الزيتون والليمون، يُشوى على قرميد ساخن للحفاظ على الرطوبة.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="starters">
+        <div class="dish__ico">🥣</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>حمّص بالجمر</h3><span class="dish__line"></span><span class="dish__price">26</span></div>
+          <p>حمّص مطحون يدويًا مع طحينة بلدية، يقدَّم دافئًا مع خبز التنّور.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="starters">
+        <div class="dish__ico">🍆</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>بابا غنوج مدخّن</h3><span class="dish__line"></span><span class="dish__price">28</span></div>
+          <p>باذنجان مشوي مباشرة على الجمر حتى يكتسب نكهة الدخان، مع الرمان والجوز.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="starters">
+        <div class="dish__ico">🧀</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>حلوم مشوي مع الزعتر</h3><span class="dish__line"></span><span class="dish__price">42</span></div>
+          <p>جبن حلوم يُشوى حتى يذوب، مع زعتر بلدي وزيت زيتون بكر.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="mains">
+        <div class="dish__ico">🍚</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>كبسة لحم حَطَب</h3><span class="dish__line"></span><span class="dish__price">112</span></div>
+          <p>أرز بسمتي مع لحم الغنم المطهو ببطء، يقدَّم في طاجن الطين.</p>
+          <span class="tag">يكفي شخصين</span>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="mains">
+        <div class="dish__ico">🍔</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>برغر الجمر</h3><span class="dish__line"></span><span class="dish__price">74</span></div>
+          <p>لحم أنغوس 180غ مشوي على الفحم، جبن مدخّن، وصوص حَطَب السري.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="dessert">
+        <div class="dish__ico">🍮</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>كنافة على الفحم</h3><span class="dish__line"></span><span class="dish__price">38</span></div>
+          <p>كنافة بالجبن الطازج تُشوى على الجمر حتى يتحوّل السكر إلى كراميل خفيف.</p>
+          <span class="tag">تُعدّ طازجة</span>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="dessert">
+        <div class="dish__ico">🍯</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>أم علي بالمكسرات</h3><span class="dish__line"></span><span class="dish__price">34</span></div>
+          <p>وصفة بيتية بالقشطة الطازجة واللوز المحمّص والزبيب.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="drinks">
+        <div class="dish__ico">🫖</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>شاي الجمر بالنعنع</h3><span class="dish__line"></span><span class="dish__price">18</span></div>
+          <p>يُغلى على الفحم مباشرة، ويقدَّم في استكانة زجاجية مع نعنع طازج.</p>
+        </div>
+      </article>
+
+      <article class="dish" data-cat="drinks">
+        <div class="dish__ico">🍋</div>
+        <div class="dish__body">
+          <div class="dish__top"><h3>ليموناضة الحطب</h3><span class="dish__line"></span><span class="dish__price">22</span></div>
+          <p>ليمون طازج مع أوراق النعنع وقليل من ماء الزهر.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SIGNATURE ==================== -->
+<section class="section" id="signature">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">توقيع المطبخ</span>
+      <h2>ثلاثة أطباق تُعرّفنا</h2>
+      <p class="lead" style="margin-top:1rem">إن كانت هذه زيارتك الأولى، ابدأ من هنا.</p>
+    </div>
+
+    <div class="sig">
+      <article class="card reveal">
+        <div class="card__art"><span>🥩</span></div>
+        <div class="card__body">
+          <h3>ريب آي الجمر</h3>
+          <p>معتّق 21 يومًا، يُشوى على حرارة مباشرة ويُراح 8 دقائق قبل التقديم.</p>
+          <div class="card__foot">
+            <span class="card__price">189 ر.س</span>
+            <span class="rate">⭐ <b>4.9</b> · 412 تقييم</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card__art" style="background:radial-gradient(120% 100% at 70% 10%,rgba(212,162,76,.5),transparent 60%),linear-gradient(150deg,#2E2418,#130E0B)">
+          <span>🍗</span>
+        </div>
+        <div class="card__body">
+          <h3>دجاج الزعفران</h3>
+          <p>مُنقّع 12 ساعة في اللبن والزعفران، ويُشوى ببطء حتى يصبح جلده مقرمشًا.</p>
+          <div class="card__foot">
+            <span class="card__price">78 ر.س</span>
+            <span class="rate">⭐ <b>4.8</b> · 276 تقييم</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <div class="card__art" style="background:radial-gradient(120% 100% at 70% 10%,rgba(232,93,42,.45),transparent 60%),linear-gradient(150deg,#2A1E14,#130E0B)">
+          <span>🍮</span>
+        </div>
+        <div class="card__body">
+          <h3>كنافة الفحم</h3>
+          <p>تُشوى على الجمر حتى يتحوّل السكر إلى كراميل خفيف، وتُقدَّم ساخنة.</p>
+          <div class="card__foot">
+            <span class="card__price">38 ر.س</span>
+            <span class="rate">⭐ <b>5.0</b> · 189 تقييم</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== REVIEWS ==================== -->
+<section class="section section--alt" id="reviews">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">آراء الضيوف</span>
+      <h2>ما يقوله من جلس على طاولاتنا</h2>
+    </div>
+
+    <div class="quotes">
+      <article class="quote reveal">
+        <div class="stars">★★★★★</div>
+        <p>أفضل ريب آي أكلته في المدينة. الفرق واضح من أول لقمة — الدخان خفيف، واللحم ينفصل بسهولة. الخدمة راقية والمكان هادئ.</p>
+        <div class="quote__who">
+          <div class="avatar">أ</div>
+          <div><b>أحمد الشمري</b><small>زيارة عائلية · مارس 2025</small></div>
+        </div>
+      </article>
+
+      <article class="quote reveal">
+        <div class="stars">★★★★★</div>
+        <p>حجزت لذكرى زواجنا، وفاجأنا الفريق بكنافة الفحم على حساب المطعم. تفاصيل صغيرة تصنع فرقًا كبيرًا. سنعود بالتأكيد.</p>
+        <div class="quote__who">
+          <div class="avatar">ن</div>
+          <div><b>نورة العتيبي</b><small>مناسبة خاصة · يناير 2025</small></div>
+        </div>
+      </article>
+
+      <article class="quote reveal">
+        <div class="stars">★★★★☆</div>
+        <p>المكان مزدحم في الويكند، لكن الانتظار يستحق. كبسة اللحم ممتازة، وشاي الجمر بالنعنع تجربة بحد ذاتها.</p>
+        <div class="quote__who">
+          <div class="avatar">خ</div>
+          <div><b>خالد المنصور</b><small>زيارة عمل · فبراير 2025</small></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BOOKING ==================== -->
+<section class="section" id="booking">
+  <div class="wrap booking">
+
+    <div class="reveal">
+      <span class="eyebrow">الحجز</span>
+      <h2>احجز طاولتك قبل أن تُشعل النار</h2>
+      <p class="lead" style="margin-top:1.1rem">
+        نوّفر طاولات محدودة كل ليلة للحفاظ على جودة الخدمة.
+        أكّد حجزك قبل 4 ساعات على الأقل، وسنرسل لك تأكيدًا عبر واتساب.
+      </p>
+
+      <ul class="booking__info" style="margin-top:2rem">
+        <li><i>📞</i><div><b>الهاتف</b><span>+966 55 123 4567</span></div></li>
+        <li><i>🕔</i><div><b>أوقات العمل</b><span>يوميًا · 1:00 ظهرًا — 1:00 صباحًا</span></div></li>
+        <li><i>👥</i><div><b>المجموعات الكبيرة</b><span>للحجوزات فوق 10 أشخاص، اتصل بنا مباشرة</span></div></li>
+        <li><i>🎉</i><div><b>المناسبات</b><span>نوفّر زاوية خاصة وأطباق توقيع عند الطلب</span></div></li>
+      </ul>
+    </div>
+
+    <form class="form reveal" id="bookingForm" novalidate>
+      <div class="form__row">
+        <div class="field">
+          <label for="name">الاسم الكامل</label>
+          <input type="text" id="name" name="name" placeholder="مثال: محمد العلي" required>
+          <span class="err">الرجاء إدخال الاسم</span>
+        </div>
+        <div class="field">
+          <label for="phone">رقم الجوال</label>
+          <input type="tel" id="phone" name="phone" placeholder="05XXXXXXXX" required>
+          <span class="err">الرجاء إدخال رقم جوال صحيح</span>
+        </div>
+      </div>
+
+      <div class="form__row">
+        <div class="field">
+          <label for="date">التاريخ</label>
+          <input type="date" id="date" name="date" required>
+          <span class="err">الرجاء اختيار التاريخ</span>
+        </div>
+        <div class="field">
+          <label for="time">الوقت</label>
+          <select id="time" name="time" required>
+            <option value="">اختر الوقت</option>
+            <option>1:00 م</option><option>3:00 م</option><option>5:00 م</option>
+            <option>7:00 م</option><option>8:30 م</option><option>10:00 م</option><option>11:30 م</option>
+          </select>
+          <span class="err">الرجاء اختيار الوقت</span>
+        </div>
+      </div>
+
+      <div class="form__row">
+        <div class="field">
+          <label for="guests">عدد الأشخاص</label>
+          <select id="guests" name="guests" required>
+            <option value="">اختر العدد</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8+</option>
+          </select>
+          <span class="err">الرجاء اختيار عدد الأشخاص</span>
+        </div>
+        <div class="field">
+          <label for="occasion">المناسبة (اختياري)</label>
+          <select id="occasion" name="occasion">
+            <option value="">بدون مناسبة</option>
+            <option>عيد ميلاد</option>
+            <option>ذكرى زواج</option>
+            <option>اجتماع عمل</option>
+            <option>مناسبة عائلية</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="notes">ملاحظات إضافية</label>
+        <textarea id="notes" name="notes" placeholder="حساسية طعام، طاولة قريبة من النافذة، كرسي أطفال…"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--full">تأكيد الحجز 🔥</button>
+      <p class="form__note">بالإرسال أنت توافق على استلام رسالة تأكيد عبر واتساب.</p>
+      <div class="toast" id="toast">✅ تم استلام طلبك! سنتواصل معك خلال دقائق لتأكيد الحجز.</div>
+    </form>
+
+  </div>
+</section>
+
+<!-- ==================== LOCATION ==================== -->
+<section class="section section--alt" id="location">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">زورونا</span>
+      <h2>المكان والأوقات</h2>
+    </div>
+
+    <div class="loc">
+      <div class="loc__map reveal">
+        <div class="pin"></div>
+      </div>
+
+      <div class="loc__cards">
+        <div class="loc__card reveal">
+          <h3>📍 العنوان</h3>
+          <p style="color:var(--muted);font-size:.9rem">
+            شارع الأمير سلطان، حي الروضة<br>
+            الرياض، المملكة العربية السعودية<br>
+            <span style="color:var(--gold)">موقف سيارات مجاني للضيوف</span>
+          </p>
+          <a href="#booking" class="btn btn--ghost" style="margin-top:1.2rem">اتصل بنا للحجز</a>
+        </div>
+
+        <div class="loc__card reveal">
+          <h3>🕔 ساعات العمل</h3>
+          <div class="hours">
+            <div><span>الأحد — الأربعاء</span><span>1:00 م — 12:00 ص</span></div>
+            <div><span>الخميس — الجمعة</span><span>1:00 م — 1:30 ص</span></div>
+            <div><span>السبت</span><span>2:00 م — 1:00 ص</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+
+      <div>
+        <a href="#home" class="logo" style="margin-bottom:1rem">
+          <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <path d="M7 42V22a17 17 0 0 1 34 0v20" stroke="#D4A24C" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+            <path d="M24 9c2.6 6.4 8 8.6 8 15a8 8 0 0 1-16 0c0-6.4 5.4-8.6 8-15z" fill="#E85D2A"/>
+            <path d="M24 22c1.1 2.6 3.4 3.6 3.4 6.3a3.4 3.4 0 0 1-6.8 0c0-2.7 2.3-3.7 3.4-6.3z" fill="#0F0D0A"/>
+          </svg>
+          <span class="logo__text">
+            <span class="logo__name">حَطَب</span>
+            <span class="logo__tag">HATAB GRILL</span>
+          </span>
+        </a>
+        <p>مشاوي على نار الحطب، بطعمٍ لا يُستعجل. من قلب الرياض، منذ 2013.</p>
+
+        <div class="socials">
+          <a href="#" aria-label="انستقرام">
+            <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 3.2A6.6 6.6 0 1 0 18.6 12 6.6 6.6 0 0 0 12 5.4zm0 10.9A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3zm6.9-11.1a1.5 1.5 0 1 1-1.5-1.5 1.5 1.5 0 0 1 1.5 1.5z"/></svg>
+          </a>
+          <a href="#" aria-label="تويتر">
+            <svg viewBox="0 0 24 24"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6zM17.8 20.1h1.7L7.3 3.8H5.5z"/></svg>
+          </a>
+          <a href="#" aria-label="تيك توك">
+            <svg viewBox="0 0 24 24"><path d="M16.5 2h-3v13.3a2.7 2.7 0 1 1-2.3-2.7v-3a5.7 5.7 0 1 0 5.3 5.7V8.9a7 7 0 0 0 4 1.3v-3a4.2 4.2 0 0 1-4-4.2z"/></svg>
+          </a>
+          <a href="#" aria-label="واتساب">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5s-1.2-1.6-1.2-3 .8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.4 1.7 2.2 1.2 1.1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.6.4 0 .1 0 .7-.2 1.4z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4>تنقّل</h4>
+        <div class="footer__links">
+          <a href="#about">عن المطعم</a>
+          <a href="#menu">القائمة</a>
+          <a href="#signature">الأطباق المميزة</a>
+          <a href="#reviews">آراء الضيوف</a>
+          <a href="#booking">الحجز</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>خدماتنا</h4>
+        <div class="footer__links">
+          <a href="#booking">حجز الطاولات</a>
+          <a href="#booking">المناسبات الخاصة</a>
+          <a href="#booking">طلبات المجموعات</a>
+          <a href="#booking">التوصيل</a>
+          <a href="#location">الفروع</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>ابقَ على الجمر</h4>
+        <p>اشترك ليصلك جديد الأطباق والعروض الموسمية قبل الجميع.</p>
+        <form class="subscribe" id="subForm">
+          <input type="email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني">
+          <button type="submit">اشترك</button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2025 حَطَب للمشاوي — جميع الحقوق محفوظة.</span>
+      <span>صُنع بشغف ونار 🔥 في الرياض</span>
+    </div>
+  </div>
+</footer>
+
+<button class="top" id="toTop" aria-label="العودة إلى الأعلى">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- Header on scroll ---------- */
+  const header = document.getElementById('header');
+  const toTop  = document.getElementById('toTop');
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    header.classList.toggle('scrolled', y > 40);
+    toTop.classList.toggle('show', y > 600);
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  /* ---------- Mobile nav ---------- */
+  const burger = document.getElementById('burger');
+  const nav    = document.getElementById('nav');
+
+  const closeNav = () => {
+    nav.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  };
+
+  burger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+  /* ---------- Active link on scroll ---------- */
+  const sections = [...document.querySelectorAll('section[id]')];
+  const navLinks = [...nav.querySelectorAll('a')];
+
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+
+  sections.forEach(s => spy.observe(s));
+
+  /* ---------- Reveal on scroll ---------- */
+  const revealer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -60px 0px'});
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3) * 90 + 'ms';
+    revealer.observe(el);
+  });
+
+  /* ---------- Menu filter ---------- */
+  const tabs = document.querySelectorAll('.tab');
+  const dishes = document.querySelectorAll('.dish');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const cat = tab.dataset.cat;
+      dishes.forEach((dish, i) => {
+        const show = cat === 'all' || dish.dataset.cat === cat;
+        if (show) {
+          dish.classList.remove('hide');
+          dish.style.animation = 'none';
+          void dish.offsetWidth;
+          dish.style.animation = `pop .35s cubic-bezier(.2,.8,.2,1) ${i * 30}ms both`;
+        } else {
+          dish.classList.add('hide');
+        }
+      });
+    });
+  });
+
+  /* ---------- Date min = today ---------- */
+  const dateInput = document.getElementById('date');
+  if (dateInput) {
+    const t = new Date();
+    const iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0,10);
+    dateInput.min = iso;
+    dateInput.value = iso;
+  }
+
+  /* ---------- Booking form ---------- */
+  const form  = document.getElementById('bookingForm');
+  const toast = document.getElementById('toast');
+
+  const setError = (el, bad) => el.closest('.field').classList.toggle('invalid', bad);
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let ok = true;
+
+    const name  = form.name;
+    const phone = form.phone;
+    const date  = form.date;
+    const time  = form.time;
+    const guests= form.guests;
+
+    const nameBad  = name.value.trim().length < 3;
+    const phoneBad = !/^[0-9+\s-]{9,15}$/.test(phone.value.trim());
+    const dateBad  = !date.value;
+    const timeBad  = !time.value;
+    const guestsBad= !guests.value;
+
+    setError(name, nameBad);   if (nameBad) ok = false;
+    setError(phone, phoneBad); if (phoneBad) ok = false;
+    setError(date, dateBad);   if (dateBad) ok = false;
+    setError(time, timeBad);   if (timeBad) ok = false;
+    setError(guests, guestsBad); if (guestsBad) ok = false;
+
+    if (!ok) {
+      form.querySelector('.invalid input, .invalid select')?.focus();
+      return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.textContent = 'جارٍ التأكيد…';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.disabled = false;
+      toast.classList.add('show');
+      form.reset();
+      if (dateInput) dateInput.value = dateInput.min;
+      setTimeout(() => toast.classList.remove('show'), 6000);
+    }, 900);
+  });
+
+  // clear error while typing
+  form.querySelectorAll('input,select,textarea').forEach(el => {
+    el.addEventListener('input', () => el.closest('.field')?.classList.remove('invalid'));
+    el.addEventListener('change', () => el.closest('.field')?.classList.remove('invalid'));
+  });
+
+  /* ---------- Newsletter ---------- */
+  const subForm = document.getElementById('subForm');
+  subForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const input = subForm.querySelector('input');
+    const btn = subForm.querySelector('button');
+    if (!/^\S+@\S+\.\S+$/.test(input.value.trim())) {
+      input.style.borderColor = '#FF7A5C';
+      return;
+    }
+    input.style.borderColor = '';
+    btn.textContent = '✓ تم';
+    input.value = '';
+    setTimeout(() => { btn.textContent = 'اشترك'; }, 2500);
+  });
+
+})();
+</script>
+</body>
+  </html>
